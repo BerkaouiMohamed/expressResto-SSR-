@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('./parts/nav.ejs',{page:"products"}) %>
+    <form class="search" action="/plates">
+        <input class="form-control" type="text" name="plate" placeholder="Default input" aria-label="default input example">
+        <select class="form-select" aria-label="Default select example" name="category">
+            <option selected value="">Open this select menu</option>
+            <option value="Salad">salad</option>
+            <option value="Pizza">pizza</option>
+            <option value="Pasta">pasta</option>
+          </select>
+    
+          <input type="range" name="" id="">
+        <input type="submit" value="submit">
+    </div>
+
+    <div style="display: flex;gap:30px;flex-wrap: wrap; justify-content: center;">
+     <% plates.forEach((element)=>{ %>
+
+        <div class="card  m-2" style="width: 18rem">
+            <img src="<%= element.image %>" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <h5 class="card-title"><%= element.title %></h5>
+              <p class="card-text">
+                  <%= element.price %> $
+              </p>
+              <a href="/plates/<%= element._id %>" class="btn btn-primary">show more ..</a>
+            </div>
+          </div>
+        <%   }) %>
+    </div>
+</body>
+</html>

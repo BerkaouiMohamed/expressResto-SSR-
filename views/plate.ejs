@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('./parts/nav.ejs',{page:"products"}) %>
+
+    <h1><%= plate.title %></h1>
+    <h1><%= plate.price %></h1>
+<button >add to cart</button>
+<script>
+document.getElementsByTagName('button')[1].addEventListener('click',function(){
+
+    const existPlates=JSON.parse(localStorage.getItem('plate'))||[]//[]
+    var item =document.URL.split('/')
+    item=item[item.length-1]//get id
+
+    if(!existPlates.find((ele)=>ele.id==item)){
+        existPlates.push({id:item,quantity:1})
+        localStorage.setItem('plate',JSON.stringify(existPlates))
+    }
+
+    if(localStorage.getItem('plate')){
+     document.getElementById('card').style.display="block"
+    }
+
+})
+
+</script>
+
+</body>
+</html>
