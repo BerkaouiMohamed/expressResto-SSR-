@@ -3,6 +3,7 @@ require('dotenv').config()
 const {join}=require('path')
 const mongoose=require('mongoose')
 const plateModel = require('./models/plateModel')
+const orderModel=require('./models/orderModel')
 
 
 
@@ -36,13 +37,21 @@ app.get('/plates/:id',async function(req,res){
     res.render('plate',{plate})
 
 })
+
 app.get('/cart',express.urlencoded({extended:true}),async function(req,res){
 
-
     const plates= await plateModel.find()
+ 
     res.render('cart',{plates})
+}) 
+  
+app.post('/order',express.urlencoded({extended:true}),async(req,res)=>{
+   const order=JSON.parse(req.body.order)
+   const user=req.body.user
+   const address=req.body.adress
+const a= await orderModel.create({order,user,address})
+console.log(a);
 
+    res.redirect('/')
 })
-
-
 app.listen(process.env.PORT,()=>console.log(`server running on port ${process.env.PORT}`)) 

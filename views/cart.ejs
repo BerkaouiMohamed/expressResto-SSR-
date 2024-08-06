@@ -1,18 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    <h1>hello</h1>
-    <div>
+  </head>
+  <body>
+    <%- include('./parts/nav.ejs',{page:"cart"}) %>
+    <h1 value="">hello</h1>
+    <div class="ui"></div>
+<form action="/order" method="post" >
+    <input type="hidden" name="order">
+    <input type="text"name="user" required>username
+    <input type="text"name="adress" required>adresss
 
-    </div>
-</body>
-<script>
-   var a= '<%- JSON.stringify(plates) %>';
-   console.log(JSON.parse(a))
-</script>
+    <input type="submit" value="submit">
+</form>
+  </body>
+  <script>
+    var plates = '<%- JSON.stringify(plates) %>';
+    plates = JSON.parse(plates);
+    console.log(plates);
+    var cart = JSON.parse(localStorage.getItem("plate"));
+    var ui = document.getElementsByClassName("ui")[0];
+    function drawUi() {
+      ui.innerHTML = "";
+      plates.forEach((element) => {
+        cart.forEach((plate) => {
+          if (element["_id"] == plate.id) {
+            const div = document.createElement("div");
+            const h1 = document.createElement("h1");
+            h1.innerHTML = element.title;
+            const p = document.createElement("p");
+            p.innerHTML = element.price;
+            const p2 = document.createElement("p");
+            p2.innerHTML = plate.quantity;
+            const plus = document.createElement("button");
+            plus.innerHTML = "plus";
+            const min = document.createElement("button");
+
+            min.innerHTML = "min";
+            plus.addEventListener("click", () => add(plate.id));
+            min.addEventListener("click", () => abcd(plate));
+
+            div.appendChild(h1);
+            div.appendChild(p);
+            div.appendChild(p2);
+            div.appendChild(plus);
+            div.appendChild(min);
+
+            ui.appendChild(div);
+          }
+        });
+      });
+
+    }
+    drawUi();
+
+    function add(ele) {
+      console.log(ele);
+      cart.map((p) => (p.id == ele ? p.quantity++ : null));
+      localStorage.setItem("plate", JSON.stringify(cart));
+      drawUi();
+    }
+
+    function abcd(ele) {
+      console.log(ele);
+      if (ele.quantity >= 2) {
+        cart.map((p) => (p.id == ele.id ? p.quantity-- : null));
+      } else {
+        cart=cart.filter((p) => p.id !== ele.id);
+      }
+      console.log(cart);
+
+      localStorage.setItem("plate", JSON.stringify(cart));
+      drawUi();
+    }
+    document.getElementsByTagName("form")[0].addEventListener('submit',function(e)
+{
+
+    document.getElementsByTagName("form")[0].order.value=localStorage.getItem('plate')
+    localStorage.clear()
+console.log(this.order)
+
+})
+  </script>
 </html>
