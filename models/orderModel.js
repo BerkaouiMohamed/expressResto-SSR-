@@ -11,7 +11,8 @@ const orderSchema = new mongoose.Schema({
       message:"name must be longer"
     },
   },
-  address:String
+  address:String,
+  status:{type:String,enum:["pending","delivred","cancled"],default:"pending"}
 });
 
 

@@ -1,57 +1,34 @@
 const express=require('express')
 require('dotenv').config()
-const {join}=require('path')
 const mongoose=require('mongoose')
-const plateModel = require('./models/plateModel')
-const orderModel=require('./models/orderModel')
+const asyncHandler = require('./utils/async')
+const { homePlates, getAllPlates, getSingelPlate, getCart, createOrder } = require('./contorllers/cotrollers')
 
 
 
 const app=express()
 app.set("view engine","ejs")
-
+app.use(express.urlencoded({extended:true}))
 //connect to db
 mongoose.connect(process.env.DB_URI,{dbName:"resto"})
 
 
+app.get('/',asyncHandler(homePlates)) 
 
-app.get('/',async(req,res)=>{ 
+app.get('/plates',asyncHandler(getAllPlates))
+app.get('/plates/:id',asyncHandler(getSingelPlate))
 
-    const salad= await plateModel.find({category:"Salad"}).limit(3)
-    const pizza= await plateModel.find({category:"Pizza"}).limit(3)
-    const pasta= await plateModel.find({category:"Pasta"}).limit(3)
+app.get('/cart',asyncHandler(getCart)) 
 
-    res.render('home',{salad,pizza,pasta}) 
-}) 
+app.post('/order',asyncHandler(createOrder))
 
 
-app.get('/plates',async function(req,res){
-    var queries={plate:req.query.plate||"" ,category:req.query.category||""}
-    const plates= await plateModel.find({title: {$regex:queries.plate,$options: 'i'},category: {$regex:queries.category,$options: 'i'}})
-    res.render('products',{plates})
-
-})
-app.get('/plates/:id',async function(req,res){
-
-    const plate= await plateModel.findById(req.params.id)
-    res.render('plate',{plate})
-
+app.all('*',(req,res)=>{
+    res.send('404')
 })
 
-app.get('/cart',express.urlencoded({extended:true}),async function(req,res){
-
-    const plates= await plateModel.find()
- 
-    res.render('cart',{plates})
-}) 
-  
-app.post('/order',express.urlencoded({extended:true}),async(req,res)=>{
-   const order=JSON.parse(req.body.order)
-   const user=req.body.user
-   const address=req.body.adress
-const a= await orderModel.create({order,user,address})
-console.log(a);
-
-    res.redirect('/')
+app.use((error,req,res,next)=>{
+    console.log(error.message)
+    res.render("error",{error:error.message})
 })
-app.listen(process.env.PORT,()=>console.log(`server running on port ${process.env.PORT}`)) 
+app.listen(process.env.PORT,()=>console.log(`server running on port ${process.env.PORT}`))  
